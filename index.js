@@ -1,17 +1,17 @@
 const {isSubclass, isPlainObject} = require('./utils')
 
-function makeError (ErrorClass, name) {
-  if (isSubclass(ErrorClass, Error) && name === undefined) {
-    return _makeError(ErrorClass)
+function makeError (name, ErrorClass) {
+  if (typeof name === 'string' && ErrorClass === undefined) {
+    return _inheritError(Error, name)
   }
-  else if (isSubclass(ErrorClass, Error) && typeof name === 'string') {
+  else if (typeof name === 'string' && isSubclass(ErrorClass, Error)) {
     return _inheritError(ErrorClass, name)
   }
-  else if (typeof ErrorClass === 'string' && name === undefined) {
-    return _inheritError(Error, ErrorClass)
+  else if (isSubclass(name, Error) && ErrorClass === undefined) {
+    return _makeError(name)
   }
   else {
-    throw new TypeError('params can only be (name), (Error, name) or (Error)')
+    throw new TypeError('params can only be (name), (name, Error) or (Error)')
   }
 }
 
@@ -62,16 +62,14 @@ function errorToObject (error) {
   })
 }
 
-function objectToError (object) {
+function objectToError (object, ErrorClass = Error) {
   if (!isPlainObject(object)) throw new TypeError('input must be a plain object')
-  const error = new ErrorFromObject()
+  const error = new ErrorClass()
   Object.assign(error, object)
   if (error.cause) error.cause = objectToError(error.cause)
   if (error.rootCause) error.rootCause = objectToError(error.rootCause)
   return error
 }
-
-const ErrorFromObject = makeError('ErrorFromObject')
 
 module.exports = {
   makeError,

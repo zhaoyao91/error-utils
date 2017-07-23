@@ -38,7 +38,7 @@ Examples:
 const MyError = makeError('MyError')
 
 // MyError is subclass of TypeError
-const MyError = makeError(TypeError, 'MyError')
+const MyError = makeError('MyError', TypeError)
 
 // MyError is subclass of SyntaxError with customized constructor
 const MyError = makeError(class MyError extends SyntaxError {
@@ -84,13 +84,14 @@ const object = errorToObject(error)
 
 #### objectToError
 
-`func(object) => error`
+`func(object, [ErrorClass]) => error`
 
 ```ecmascript 6
 const error = new MyError('my error')
 const object = errorToObject(error)
-const newError = objectToError(object)
+const newError = objectToError(object, MyError)
 
+// newError is instance of MyError
 // newError has name, message, stack, ownStack fields from object
 // newError has all other direct fields of object
 // newError.cause and newError.rootError are parsed from object.cause and object.rootError by objectToError

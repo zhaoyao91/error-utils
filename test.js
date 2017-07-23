@@ -15,7 +15,7 @@ describe('Error Utils', function () {
     })
 
     test('make error by BaseError and name', () => {
-      const MyError = makeError(TypeError, 'MyError')
+      const MyError = makeError('MyError', TypeError)
       const myError = new MyError('my error')
 
       expect(isSubclass(MyError, Error)).toBe(true)
@@ -42,7 +42,7 @@ describe('Error Utils', function () {
     })
 
     test('invalid usage', () => {
-      expect(() => makeError('MyError', Error)).toThrow('params can only be (name), (Error, name) or (Error)')
+      expect(() => makeError(Error, 'MyError')).toThrow('params can only be (name), (name, Error) or (Error)')
     })
   })
 
@@ -145,6 +145,18 @@ describe('Error Utils', function () {
 
       expect(error.rootCause instanceof Error).toBe(true)
       expect(error.rootCause.name).toBe('InnerError1')
+    })
+
+    test('object to specific error', () => {
+      const obj = {
+        name: 'TestError',
+        message: 'test error'
+      }
+
+      const error = objectToError(obj, TypeError)
+      expect(error instanceof TypeError).toBe(true)
+      expect(error.name).toBe('TestError')
+      expect(error.message).toBe('test error')
     })
   })
 })
