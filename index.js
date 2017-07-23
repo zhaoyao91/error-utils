@@ -45,11 +45,8 @@ function causedBy (error, cause) {
     error.rootCause = cause
   }
 
-  const ownStack = error.stack
-  Object.defineProperty(error, 'ownStack', {get: () => ownStack})
-
-  const stack = ownStack + '\nCause: ' + cause.stack
-  Object.defineProperty(error, 'stack', {get: () => stack})
+  error.ownStack = error.stack
+  error.stack = error.stack + '\nCause: ' + cause.stack
 
   return error
 }
