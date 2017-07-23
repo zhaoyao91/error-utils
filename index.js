@@ -69,14 +69,6 @@ function objectToError (object) {
   if (!isPlainObject(object)) throw new TypeError('input must be a plain object')
   const error = new ErrorFromObject()
   Object.assign(error, object)
-  if (typeof object.stack === 'string') {
-    const stack = object.stack
-    Object.defineProperty(error, 'stack', {get: () => stack})
-  }
-  if (typeof object.ownStack === 'string') {
-    const ownStack = object.ownStack
-    Object.defineProperty(error, 'ownStack', {get: () => ownStack})
-  }
   if (error.cause) error.cause = objectToError(error.cause)
   if (error.rootCause) error.rootCause = objectToError(error.rootCause)
   return error
